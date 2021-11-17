@@ -2,7 +2,7 @@ import {GameObject} from "../base";
 import {globalState} from "../state";
 import collision, {getDistance} from "../utils/collision";
 
-import image from '../../assets/enemy.png'
+import image from '../../assets/images/enemy.png'
 
 export default class EnemyObject extends GameObject {
     radius = 30;
@@ -10,6 +10,9 @@ export default class EnemyObject extends GameObject {
     deltaTime = -5000;
     speedX = 0;
     speedY = 0;
+
+    live = 100
+    isDefeat = false;
 
     angry = false;
 
@@ -26,14 +29,18 @@ export default class EnemyObject extends GameObject {
 
     draw() {
         super.draw();
-        this.ctx.drawImage(this.image, this.coords.x - globalState.sceneXDelta - this.radius, this.coords.y - globalState.sceneYDelta - this.radius)
+        this.ctx.save()
+        if (this.isDefeat) this.ctx.filter = 'grayscale(80%)'
+        if (!this.reverse) this.ctx.scale(-1, 1);
+        this.ctx.drawImage(this.image, (this.reverse ? 1 : -1) * (this.coords.x - globalState.sceneXDelta) - this.radius, this.coords.y - globalState.sceneYDelta - this.radius)
+        this.ctx.restore();
     }
 
     update() {
         super.update();
         if (this.angry && getDistance(this, globalState.player) < (globalState.player.shotSound ? 600 : 200)) {
-            this.coords.x += globalState.player.coords.x > this.coords.x ? 3 : -3
-            this.coords.y += globalState.player.coords.y > this.coords.y ? 3 : -3
+            if (Math.abs(globalState.player.coords.x - this.coords.x) > 5) this.coords.x += globalState.player.coords.x > this.coords.x ? 3 : -3
+            if (Math.abs(globalState.player.coords.y - this.coords.y) > 5) this.coords.y += globalState.player.coords.y > this.coords.y ? 3 : -3
             this.speed = 3
         } else {
             if (new Date().getTime() - (this.timeCreated + this.deltaTime) > 3000) {
@@ -47,5 +54,15 @@ export default class EnemyObject extends GameObject {
         }
 
         if (collision(this, globalState.player)) globalState.player.live -= 2
+
+        if (this.live <= 0) this.destroy()
+    }
+
+    takeDefeat(value: number) {
+        this.live -= value;
+        this.isDefeat = true
+        setTimeout(() => {
+            this.isDefeat = false
+        }, 300)
     }
 }

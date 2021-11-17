@@ -4,6 +4,8 @@ import EnemyObject from "./enemy";
 import collision from "../utils/collision";
 import TreeObject from "./tree";
 
+import inTarget from '../../assets/audio/in_target.mp3'
+
 export default class ShotObject extends GameObject {
     direction = 0;
     radius = 20;
@@ -28,11 +30,15 @@ export default class ShotObject extends GameObject {
 
         globalState.objects.forEach((el) => {
             if (el instanceof EnemyObject && collision(el, this)) {
-                el.destroy();
+                el.takeDefeat(40)
                 this.destroy()
+                const audio = new Audio(inTarget)
+                audio.play()
             }
             if (el instanceof TreeObject && collision(el, this)) {
                 this.destroy();
+                const audio = new Audio(inTarget)
+                audio.play()
             }
         })
 

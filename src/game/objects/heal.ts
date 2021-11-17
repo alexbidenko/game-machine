@@ -2,7 +2,7 @@ import {GameObject} from "../base";
 import collision from "../utils/collision";
 import {globalState} from "../state";
 
-import poison from '../../assets/poison.png'
+import poison from '../../assets/images/poison.png'
 
 export default class HealObject extends GameObject {
     radius = 20;

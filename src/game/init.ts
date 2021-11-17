@@ -7,13 +7,13 @@ import HealObject from "./objects/heal";
 import TreeObject from "./objects/tree";
 
 export default (ctx: CanvasRenderingContext2D) => {
-    new MapObject(ctx, { x: 0, y: 0 })
+    new MapObject(ctx, { x: 0, y: -Infinity })
     const player = new Player(ctx, { x: globalState.sceneWidth / 2, y: globalState.sceneHeight / 2 });
     new InterfaceObject(ctx, { x: 0, y: Infinity })
 
-    Array.from({ length: 10 }, (_, i) => new EnemyObject(ctx, { x: Math.random() * 1000, y: Math.random() * 1000 }))
-    Array.from({ length: 6 }, (_, i) => new HealObject(ctx, { x: Math.random() * 2000 - 500, y: Math.random() * 2000 - 500 }))
-    Array.from({ length: 20 }, (_, i) => new TreeObject(ctx, { x: Math.random() * 2000 - 500, y: Math.random() * 2000 - 500 }))
+    Array.from({ length: 10 }, () => new EnemyObject(ctx, { x: Math.random() * 1000, y: Math.random() * 1000 }))
+    Array.from({ length: 6 }, () => new HealObject(ctx, { x: Math.random() * 2000 - 500, y: Math.random() * 2000 - 500 }))
+    Array.from({ length: 20 }, () => new TreeObject(ctx, { x: Math.random() * 2000 - 500, y: Math.random() * 2000 - 500 }))
 
     initState()
 

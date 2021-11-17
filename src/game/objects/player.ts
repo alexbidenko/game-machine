@@ -2,7 +2,8 @@ import {GameObject} from "../base";
 import {globalState} from "../state";
 import ShotObject from "./shot";
 
-import image from '../../assets/player.png'
+import image from '../../assets/images/player.png'
+import shotSound from '../../assets/audio/shot.mp3'
 
 const PLAYER_WIDTH = 80;
 
@@ -13,6 +14,7 @@ export class Player extends GameObject {
 
     shotSoundTimer = 0;
     shotSound = false;
+    lastShotTime = 0;
 
     live = 100;
 
@@ -31,8 +33,12 @@ export class Player extends GameObject {
         [
             'click',
             () => {
+                if (new Date().getTime() - this.lastShotTime < 500) return;
+                this.lastShotTime = new Date().getTime()
                 const shot = new ShotObject(this.ctx, this.coords);
                 shot.direction = this.direction
+                const audio = new Audio(shotSound);
+                audio.play();
                 this.shotSound = true
                 clearTimeout(this.shotSoundTimer)
                 this.shotSoundTimer = setTimeout(() => {
@@ -55,6 +61,7 @@ export class Player extends GameObject {
         this.ctx.restore();
 
         this.ctx.strokeStyle = 'black'
+        this.ctx.lineWidth = 4
         this.ctx.beginPath();
         this.ctx.moveTo(this.coords.x - globalState.sceneXDelta, this.coords.y - globalState.sceneYDelta);
         this.ctx.lineTo(
@@ -68,16 +75,16 @@ export class Player extends GameObject {
         super.update();
         if (this.live <= 0) this.destroy()
 
-        if (globalState.keys.includes('w')) {
+        if (globalState.keys.includes('w') || globalState.keys.includes('ц')) {
             this.coords.y -= this.speed;
         }
-        if (globalState.keys.includes('s')) {
+        if (globalState.keys.includes('s') || globalState.keys.includes('ы')) {
             this.coords.y += this.speed;
         }
-        if (globalState.keys.includes('a')) {
+        if (globalState.keys.includes('a') || globalState.keys.includes('ф')) {
             this.coords.x -= this.speed;
         }
-        if (globalState.keys.includes('d')) {
+        if (globalState.keys.includes('d') || globalState.keys.includes('в')) {
             this.coords.x += this.speed;
         }
 

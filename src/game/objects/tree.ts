@@ -2,7 +2,7 @@ import {GameObject} from "../base";
 import collision from "../utils/collision";
 import {globalState} from "../state";
 
-import tree from '../../assets/tree.png';
+import tree from '../../assets/images/tree.png';
 
 export default class TreeObject extends GameObject {
     radius = 30;

@@ -1,7 +1,7 @@
 import {GameObject} from "../base";
 import {globalState} from "../state";
 
-import grass from '../../assets/grass.jpg';
+import grass from '../../assets/images/grass.jpg';
 
 export default class MapObject extends GameObject{
     grass = new Image(640, 640)
