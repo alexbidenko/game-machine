@@ -81,11 +81,11 @@ export default class SwordObject extends BaseWeapon {
                 xDelta: 0,
                 rotate: 0,
             },
-            200,
+            150,
         );
         setTimeout(() => {
             globalState.player.speed = globalState.player.defaultSpeed
             this.isAttack = false
-        }, 300)
+        }, 200)
     }
 }

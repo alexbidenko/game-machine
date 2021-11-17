@@ -2,6 +2,8 @@ import {GameObject} from "../base";
 import {globalState} from "../state";
 
 import image from '../../assets/images/player.png'
+import deathSound from '../../assets/audio/minecraft-death-sound.mp3'
+import GameOver from "./gameOver";
 
 const PLAYER_WIDTH = 80;
 
@@ -82,5 +84,13 @@ export class Player extends GameObject {
         if (this.coords.x > globalState.sceneXDelta + globalState.sceneWidth * 0.6) globalState.sceneXDelta += this.speed;
         if (this.coords.y < globalState.sceneYDelta + globalState.sceneHeight * 0.4) globalState.sceneYDelta -= this.speed;
         if (this.coords.y > globalState.sceneYDelta + globalState.sceneHeight * 0.6) globalState.sceneYDelta += this.speed;
+    }
+
+    destroy() {
+        super.destroy();
+        const go = new GameOver(this.ctx, { x: 0, y: Infinity })
+        go.init()
+        const audio = new Audio(deathSound)
+        audio.play()
     }
 }
