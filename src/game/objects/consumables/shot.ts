@@ -1,10 +1,10 @@
-import {GameObject} from "../base";
-import {globalState} from "../state";
-import EnemyObject from "./enemy";
-import collision from "../utils/collision";
-import TreeObject from "./tree";
+import {GameObject} from "../../base";
+import {globalState} from "../../state";
+import EnemyObject from "../enemy";
+import collision from "../../utils/collision";
+import TreeObject from "../tree";
 
-import inTarget from '../../assets/audio/in_target.mp3'
+import inTarget from '../../../assets/audio/in_target.mp3'
 
 export default class ShotObject extends GameObject {
     direction = 0;

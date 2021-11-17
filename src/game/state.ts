@@ -1,5 +1,6 @@
 import {GameObject} from "./base";
 import {Player} from "./objects/player";
+import BaseWeapon from "./objects/weapons/base";
 
 export const globalState = {
     keys: [] as string[],
@@ -10,6 +11,9 @@ export const globalState = {
     player: {} as Player,
     objects: [] as GameObject[],
     canvas: {} as HTMLCanvasElement,
+    inventory: {
+        activeWeapon: {} as BaseWeapon,
+    }
 }
 
 const initState = () => {

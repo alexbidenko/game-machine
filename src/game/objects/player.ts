@@ -1,13 +1,12 @@
 import {GameObject} from "../base";
 import {globalState} from "../state";
-import ShotObject from "./shot";
 
 import image from '../../assets/images/player.png'
-import shotSound from '../../assets/audio/shot.mp3'
 
 const PLAYER_WIDTH = 80;
 
 export class Player extends GameObject {
+    defaultSpeed = 6;
     speed = 6;
     direction = 0;
     radius = PLAYER_WIDTH / 2;
@@ -35,10 +34,9 @@ export class Player extends GameObject {
             () => {
                 if (new Date().getTime() - this.lastShotTime < 500) return;
                 this.lastShotTime = new Date().getTime()
-                const shot = new ShotObject(this.ctx, this.coords);
-                shot.direction = this.direction
-                const audio = new Audio(shotSound);
-                audio.play();
+
+                globalState.inventory.activeWeapon.attack()
+
                 this.shotSound = true
                 clearTimeout(this.shotSoundTimer)
                 this.shotSoundTimer = setTimeout(() => {
@@ -60,15 +58,7 @@ export class Player extends GameObject {
         this.ctx.drawImage(this.image, (this.reverse ? -1 : 1) * (this.coords.x - globalState.sceneXDelta) - this.radius, this.coords.y - globalState.sceneYDelta - this.radius)
         this.ctx.restore();
 
-        this.ctx.strokeStyle = 'black'
-        this.ctx.lineWidth = 4
-        this.ctx.beginPath();
-        this.ctx.moveTo(this.coords.x - globalState.sceneXDelta, this.coords.y - globalState.sceneYDelta);
-        this.ctx.lineTo(
-            this.coords.x + (PLAYER_WIDTH / 2) * Math.sin(this.direction) - globalState.sceneXDelta,
-            this.coords.y - (PLAYER_WIDTH / 2) * Math.cos(this.direction) - globalState.sceneYDelta
-        );
-        this.ctx.stroke();
+        globalState.inventory.activeWeapon.drawWeapon()
     }
 
     update() {

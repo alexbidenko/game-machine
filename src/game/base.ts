@@ -16,7 +16,7 @@ export class GameObject {
 
     timeCreated = 0;
 
-    constructor(ctx: CanvasRenderingContext2D, coords: CoordinatesType) {
+    constructor(ctx: CanvasRenderingContext2D, coords: CoordinatesType = {x: 0, y: 0}) {
         this.ctx = ctx;
         this.prevCoords = {...coords};
         this.coords = {...coords};
