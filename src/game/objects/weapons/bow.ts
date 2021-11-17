@@ -5,6 +5,8 @@ import {globalState} from "../../state";
 import shotSound from '../../../assets/audio/shot.mp3'
 
 export default class BowObject extends BaseWeapon {
+    soundScale = 2;
+
     attack() {
         super.attack();
         const shot = new ShotObject(this.ctx, globalState.player.coords);

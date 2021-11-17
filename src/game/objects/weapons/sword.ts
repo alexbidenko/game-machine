@@ -8,6 +8,7 @@ import BaseWeapon from "./base";
 import EnemyObject from "../enemy";
 
 export default class SwordObject extends BaseWeapon {
+    soundScale = 3
     radius = 20;
     image = new Image(40, 40)
     isAttack = false
@@ -43,11 +44,16 @@ export default class SwordObject extends BaseWeapon {
     drawWeapon() {
         super.drawWeapon();
         this.ctx.save()
-        const x = (globalState.player.reverse && !this.isAttack ? -1 : 1) * (globalState.player.coords.x - globalState.sceneXDelta) - this.radius + 20 + (+this.isAttack * 40 * (globalState.player.reverse ? -1 : 1))
-        const y = globalState.player.coords.y - globalState.sceneYDelta - this.radius - (this.isAttack ? -15 : 10)
+        const x = (globalState.player.reverse && !this.isAttack ? -1 : 1) *
+            (globalState.player.coords.x - globalState.sceneXDelta)
+            - this.radius + 20 + (
+                +this.isAttack * (this.animations.attack?.current?.xDelta || 0) *
+                (globalState.player.reverse ? -1 : 1)
+            )
+        const y = globalState.player.coords.y - globalState.sceneYDelta - this.radius - (this.animations.attack?.current?.yDelta || 10)
         if (this.isAttack) {
             this.ctx.translate(x, y);
-            this.ctx.rotate(Math.PI / 2 * (globalState.player.reverse ? -1 : 1))
+            this.ctx.rotate(this.animations.attack?.current?.rotate || 0)
         }
         if (globalState.player.reverse) this.ctx.scale(-1, 1);
         this.ctx.drawImage(this.image,
@@ -63,6 +69,20 @@ export default class SwordObject extends BaseWeapon {
         globalState.player.speed *= 1.5
         const audio = new Audio(swordEmptyEffect);
         audio.play();
+        this.animate(
+            'attack',
+            {
+                yDelta: -15,
+                xDelta: 40,
+                rotate: () => Math.PI / 2 * (globalState.player.reverse ? -1 : 1),
+            },
+            {
+                yDelta: 10,
+                xDelta: 0,
+                rotate: 0,
+            },
+            200,
+        );
         setTimeout(() => {
             globalState.player.speed = globalState.player.defaultSpeed
             this.isAttack = false

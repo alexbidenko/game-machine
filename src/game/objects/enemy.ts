@@ -38,7 +38,7 @@ export default class EnemyObject extends GameObject {
 
     update() {
         super.update();
-        if (this.angry && getDistance(this, globalState.player) < (globalState.player.shotSound ? 600 : 200)) {
+        if (this.angry && getDistance(this, globalState.player) < (200 * (globalState.player.shotSound ? globalState.inventory.activeWeapon.soundScale : 1))) {
             if (Math.abs(globalState.player.coords.x - this.coords.x) > 5) this.coords.x += globalState.player.coords.x > this.coords.x ? 3 : -3
             if (Math.abs(globalState.player.coords.y - this.coords.y) > 5) this.coords.y += globalState.player.coords.y > this.coords.y ? 3 : -3
             this.speed = 3

@@ -21,7 +21,7 @@ export default class HealObject extends GameObject {
     update() {
         super.update();
         if (collision(this, globalState.player) && globalState.player.live < 100) {
-            globalState.player.live = Math.min(100, globalState.player.live + 10);
+            globalState.player.live = Math.min(100, globalState.player.live + 20);
             this.destroy()
         }
     }
