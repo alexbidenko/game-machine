@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  game_machine:
+    restart: unless-stopped
+    container_name: game_machine
+    build: .
+
+networks:
+  default:
+    external:
+      name: server
