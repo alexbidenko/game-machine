@@ -1,4 +1,5 @@
 import {globalState} from "./state";
+import BaseCollider from "./colliders/base";
 
 export type CoordinatesType = { x: number; y: number };
 
@@ -9,6 +10,15 @@ export type AnimationStateType = {
     timeStart: number;
     time: number;
     timeState: number;
+    recursive: boolean;
+}
+
+export type AnimationFramesType = {
+    getFrame: (timeState: number) => HTMLImageElement;
+    timeStart: number;
+    time: number;
+    timeState: number;
+    recursive: boolean;
 }
 
 export class GameObject {
@@ -17,7 +27,6 @@ export class GameObject {
     prevCoords: CoordinatesType;
     coords: CoordinatesType;
 
-    radius = 1
     speed = 0;
     reverse = false;
 
@@ -26,6 +35,9 @@ export class GameObject {
     timeCreated = 0;
 
     animations = {} as Record<string, AnimationStateType>;
+    frameAnimations = {} as Record<string, AnimationFramesType>;
+
+    collider: BaseCollider | null = null;
 
     constructor(ctx: CanvasRenderingContext2D, coords: CoordinatesType = {x: 0, y: 0}) {
         this.ctx = ctx;
@@ -60,6 +72,19 @@ export class GameObject {
             });
             el.timeState = new Date().getTime() - el.timeStart;
         });
+        Object.keys(this.frameAnimations).forEach((k) => {
+            const el = this.frameAnimations[k];
+            if (el.timeState > el.time) {
+                if (el.recursive) {
+                    el.timeState = 0
+                    el.timeStart = new Date().getTime()
+                } else {
+                    delete this.animations[k];
+                    return;
+                }
+            }
+            el.timeState = new Date().getTime() - el.timeStart;
+        });
     }
 
     destroy() {
@@ -76,6 +101,17 @@ export class GameObject {
             timeStart: new Date().getTime(),
             time,
             timeState: 0,
+            recursive: false,
+        };
+    }
+
+    animateFrame(key: string, getFrame: AnimationFramesType['getFrame'], time: number, recursive = false) {
+        this.frameAnimations[key] = {
+            getFrame,
+            timeStart: new Date().getTime(),
+            time,
+            timeState: 0,
+            recursive,
         };
     }
 }

@@ -1,8 +1,9 @@
 import {GameObject} from "../base";
 import {globalState} from "../state";
-import collision, {getDistance} from "../utils/collision";
 
 import image from '../../assets/images/enemy.png'
+import {getObjectsDistance} from "../colliders/base";
+import CircleCollider from "../colliders/circle";
 
 export default class EnemyObject extends GameObject {
     radius = 30;
@@ -18,6 +19,8 @@ export default class EnemyObject extends GameObject {
 
     image = new Image(this.radius * 2, this.radius * 2)
     imageLoaded = false;
+
+    collider: CircleCollider = new CircleCollider(this, this.radius)
 
     init() {
         setTimeout(() => this.angry = true, 2000)
@@ -38,7 +41,7 @@ export default class EnemyObject extends GameObject {
 
     update() {
         super.update();
-        if (this.angry && getDistance(this, globalState.player) < (200 * (globalState.player.shotSound ? globalState.inventory.activeWeapon.soundScale : 1))) {
+        if (this.angry && getObjectsDistance(this, globalState.player) < (200 * (globalState.player.shotSound ? globalState.inventory.activeWeapon.soundScale : 1))) {
             if (Math.abs(globalState.player.coords.x - this.coords.x) > 5) this.coords.x += globalState.player.coords.x > this.coords.x ? 3 : -3
             if (Math.abs(globalState.player.coords.y - this.coords.y) > 5) this.coords.y += globalState.player.coords.y > this.coords.y ? 3 : -3
             this.speed = 3
@@ -53,7 +56,7 @@ export default class EnemyObject extends GameObject {
             this.speed = Math.sqrt(this.speedX ** 2 + this.speedY ** 2)
         }
 
-        if (collision(this, globalState.player)) globalState.player.live -= 2
+        if (this.collider.checkCollision(globalState.player)) globalState.player.live -= 2
 
         if (this.live <= 0) this.destroy()
     }

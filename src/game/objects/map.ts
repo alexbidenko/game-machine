@@ -19,7 +19,7 @@ export default class MapObject extends GameObject{
         if (this.grassLoaded) {
             for (let i = 0; i < 30; i++) {
                 for (let j = 0; j < 30; j++) {
-                    this.ctx.drawImage(this.grass, -640 * 5 + i * 640 - globalState.sceneXDelta, -640 * 5 + j * 640 - globalState.sceneYDelta)
+                    this.ctx.drawImage(this.grass, -640 * 7 + i * 640 - globalState.sceneXDelta, -640 * 7 + j * 640 - globalState.sceneYDelta)
                 }
             }
         }

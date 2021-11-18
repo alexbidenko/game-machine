@@ -1,4 +1,3 @@
-import collision from "../../utils/collision";
 import {globalState} from "../../state";
 
 import sword from '../../../assets/images/sword.png'
@@ -6,10 +5,10 @@ import swordEmptyEffect from '../../../assets/audio/empty_sword_effect.wav'
 import swordShotEffect from '../../../assets/audio/sword_shot_effect.wav'
 import BaseWeapon from "./base";
 import EnemyObject from "../enemy";
+import CircleCollider from "../../colliders/circle";
 
 export default class SwordObject extends BaseWeapon {
     soundScale = 3
-    radius = 20;
     image = new Image(40, 40)
     isAttack = false
 
@@ -20,19 +19,15 @@ export default class SwordObject extends BaseWeapon {
 
     draw() {
         super.draw();
+        if (this.inInventory) return;
         this.ctx.drawImage(this.image, this.coords.x - globalState.sceneXDelta - this.radius, this.coords.y - globalState.sceneYDelta - this.radius)
     }
 
     update() {
         super.update();
-        if (collision(this, globalState.player)) {
-            globalState.inventory.activeWeapon = new SwordObject(this.ctx);
-            globalState.inventory.activeWeapon.init()
-            this.destroy()
-        }
         if (this.isAttack) {
             globalState.objects.forEach((el) => {
-                if (el instanceof EnemyObject && collision(el, globalState.player)) {
+                if (el instanceof EnemyObject && globalState.player.collider.checkCollision(el)) {
                     el.takeDefeat(100)
                     const audio = new Audio(swordShotEffect);
                     audio.play();

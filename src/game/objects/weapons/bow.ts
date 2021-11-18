@@ -18,6 +18,7 @@ export default class BowObject extends BaseWeapon {
     drawWeapon() {
         super.drawWeapon();
 
+        this.ctx.fillStyle = 'black'
         this.ctx.strokeStyle = 'black'
         this.ctx.lineWidth = 4
         this.ctx.beginPath();
