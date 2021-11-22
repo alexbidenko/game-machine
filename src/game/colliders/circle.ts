@@ -1,11 +1,11 @@
-import BaseCollider from "./base";
-import {GameObject} from "../base";
+import BaseCollider from './base';
+import { GameObject } from '../base';
 
 export default class CircleCollider extends BaseCollider {
-    radius: number;
+  radius: number;
 
-    constructor(go: GameObject, radius: number) {
-        super(go);
-        this.radius = radius;
-    }
+  constructor(go: GameObject, radius: number) {
+    super(go);
+    this.radius = radius;
+  }
 }

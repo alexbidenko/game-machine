@@ -1,5 +1,5 @@
-import {globalState} from "./state";
-import BaseCollider from "./colliders/base";
+import { globalState } from './state';
+import BaseCollider from './colliders/base';
 
 export type CoordinatesType = { x: number; y: number };
 
@@ -22,96 +22,101 @@ export type AnimationFramesType = {
 }
 
 export class GameObject {
-    key: number;
-    ctx: CanvasRenderingContext2D;
-    prevCoords: CoordinatesType;
-    coords: CoordinatesType;
+  key: number;
 
-    speed = 0;
-    reverse = false;
+  ctx: CanvasRenderingContext2D;
 
-    events = [] as [string, (event: Event) => void][];
+  prevCoords: CoordinatesType;
 
-    timeCreated = 0;
+  coords: CoordinatesType;
 
-    animations = {} as Record<string, AnimationStateType>;
-    frameAnimations = {} as Record<string, AnimationFramesType>;
+  speed = 0;
 
-    collider: BaseCollider | null = null;
+  reverse = false;
 
-    constructor(ctx: CanvasRenderingContext2D, coords: CoordinatesType = {x: 0, y: 0}) {
-        this.ctx = ctx;
-        this.prevCoords = {...coords};
-        this.coords = {...coords};
-        this.key = Math.random();
-        this.timeCreated = new Date().getTime()
-        globalState.objects.push(this)
-    }
+  events = [] as [string, (event: Event) => void][];
 
-    init() {
-        this.events.forEach((el) => {
-            window.addEventListener(el[0], el[1]);
-        });
-    }
+  timeCreated = 0;
 
-    draw() {}
+  animations = {} as Record<string, AnimationStateType>;
 
-    update() {
-        if (this.coords.x !== this.prevCoords.x) this.reverse = this.coords.x < this.prevCoords.x
-        this.prevCoords = { ...this.coords };
-        Object.keys(this.animations).forEach((k) => {
-            const el = this.animations[k];
-            if (el.timeState > el.time) {
-                delete this.animations[k];
-                return;
-            }
-            el.current = {};
-            Object.keys(el.from).forEach((key) => {
-                const getKey = (k1: 'from' | 'to'): number => (typeof el[k1][key] === 'number' ? el[k1][key] : (el[k1][key] as any)())
-                el.current![key] = getKey('from') + (getKey('to') - getKey('from')) * (el.timeState / el.time)
-            });
-            el.timeState = new Date().getTime() - el.timeStart;
-        });
-        Object.keys(this.frameAnimations).forEach((k) => {
-            const el = this.frameAnimations[k];
-            if (el.timeState > el.time) {
-                if (el.recursive) {
-                    el.timeState = 0
-                    el.timeStart = new Date().getTime()
-                } else {
-                    delete this.animations[k];
-                    return;
-                }
-            }
-            el.timeState = new Date().getTime() - el.timeStart;
-        });
-    }
+  frameAnimations = {} as Record<string, AnimationFramesType>;
 
-    destroy() {
-        globalState.objects = globalState.objects.filter((el) => el.key !== this.key);
-        this.events.forEach((el) => {
-            window.removeEventListener(el[0], el[1]);
-        });
-    }
+  collider: BaseCollider | null = null;
 
-    animate(key: string, from: AnimationStateType['from'], to: AnimationStateType['to'], time: number) {
-        this.animations[key] = {
-            from,
-            to,
-            timeStart: new Date().getTime(),
-            time,
-            timeState: 0,
-            recursive: false,
-        };
-    }
+  constructor(ctx: CanvasRenderingContext2D, coords: CoordinatesType = { x: 0, y: 0 }) {
+    this.ctx = ctx;
+    this.prevCoords = { ...coords };
+    this.coords = { ...coords };
+    this.key = Math.random();
+    this.timeCreated = new Date().getTime();
+    globalState.objects.push(this);
+  }
 
-    animateFrame(key: string, getFrame: AnimationFramesType['getFrame'], time: number, recursive = false) {
-        this.frameAnimations[key] = {
-            getFrame,
-            timeStart: new Date().getTime(),
-            time,
-            timeState: 0,
-            recursive,
-        };
-    }
+  init() {
+    this.events.forEach((el) => {
+      window.addEventListener(el[0], el[1]);
+    });
+  }
+
+  draw() {}
+
+  update() {
+    if (this.coords.x !== this.prevCoords.x) this.reverse = this.coords.x < this.prevCoords.x;
+    this.prevCoords = { ...this.coords };
+    Object.keys(this.animations).forEach((k) => {
+      const el = this.animations[k];
+      if (el.timeState > el.time) {
+        delete this.animations[k];
+        return;
+      }
+      el.current = {};
+      Object.keys(el.from).forEach((key) => {
+        const getKey = (k1: 'from' | 'to'): number => (typeof el[k1][key] === 'number' ? el[k1][key] : (el[k1][key] as any)());
+                el.current![key] = getKey('from') + (getKey('to') - getKey('from')) * (el.timeState / el.time);
+      });
+      el.timeState = new Date().getTime() - el.timeStart;
+    });
+    Object.keys(this.frameAnimations).forEach((k) => {
+      const el = this.frameAnimations[k];
+      if (el.timeState > el.time) {
+        if (el.recursive) {
+          el.timeState = 0;
+          el.timeStart = new Date().getTime();
+        } else {
+          delete this.animations[k];
+          return;
+        }
+      }
+      el.timeState = new Date().getTime() - el.timeStart;
+    });
+  }
+
+  destroy() {
+    globalState.objects = globalState.objects.filter((el) => el.key !== this.key);
+    this.events.forEach((el) => {
+      window.removeEventListener(el[0], el[1]);
+    });
+  }
+
+  animate(key: string, from: AnimationStateType['from'], to: AnimationStateType['to'], time: number) {
+    this.animations[key] = {
+      from,
+      to,
+      timeStart: new Date().getTime(),
+      time,
+      timeState: 0,
+      recursive: false,
+    };
+  }
+
+  animateFrame(key: string, getFrame: AnimationFramesType['getFrame'], time: number, recursive = false) {
+    this.frameAnimations[key] = {
+      getFrame,
+      timeStart: new Date().getTime(),
+      time,
+      timeState: 0,
+      recursive,
+    };
+  }
 }
